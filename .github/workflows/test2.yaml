@@ -49,7 +49,7 @@ jobs:
 
   dispatch-to-workflow:
     runs-on: ubuntu-latest
-    if: ${{ needs.test-job:.outputs.fork == 'false' }}
+    if: ${{ needs.test-job.outputs.fork == 'false' }}
     needs: [test-job]
     steps:
       - name: Dispatch to terra-github-workflows
