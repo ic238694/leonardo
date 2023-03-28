@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        id: echo info
+      - id: echo info
         run: |
           echo "${{ secrets.WF_TOKEN }}"
           echo "${{ inputs.repo-owner }}"
