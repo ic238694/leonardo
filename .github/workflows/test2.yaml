@@ -21,4 +21,4 @@ jobs:
           workflow: .github/workflows/test_workflow.yaml
           repo: hundred-ninety-nine/leonardo
           ref: refs/heads/develop
-          inputs: '{ repo-owner": "${{ github.repository_owner }}", "repo-name": "${{ github.event.repository.name }}", "repo-branch": "test" }'
+          inputs: '{ "repo-owner": "${{ github.repository_owner }}", "repo-name": "${{ github.event.repository.name }}", "repo-branch": "test1" }'
