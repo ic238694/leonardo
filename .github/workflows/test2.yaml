@@ -2,18 +2,56 @@ name: Test workflow
 # Test workflow
 
 on:
-  push:
+  pull_request:
     branches:
-      - test1
+      - develop
     paths-ignore:
       - 'README.md'
+  push:
+    branches:
+      - develop
+    paths-ignore:
+      - 'README.md'
+  merge_group:
+    branches:
+      - develop
 
 jobs:
   test-job:
     runs-on: ubuntu-latest
+    outputs:
+      repo-branch: ${{ steps.extract-branch.outputs.repo-branch }}
+      fork: ${{ steps.extract-branch.outputs.fork }}
 
     steps:
       - uses: actions/checkout@v3
+      
+      - name: Obtain branch properties
+        id: extract-branch
+        run: |
+          FORK=false
+          GITHUB_EVENT_NAME=${{ github.event_name }}
+          echo "${GITHUB_EVENT_NAME}"
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            GITHUB_REF=${{ github.ref }}
+          elif [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            FORK=${{ github.event.pull_request.head.repo.fork }}
+            GITHUB_REF=refs/heads/${{ github.head_ref }}
+          elif [[ "$GITHUB_EVENT_NAME" == "merge_group" ]]; then
+            GITHUB_REF=refs/heads/${{ github.head_ref }}
+          else
+            echo "Failed to extract branch information"
+            exit 1
+          fi
+          echo "FORK=${FORK}"
+          echo "repo-branch=${GITHUB_REF/refs\/heads\//""}" >> $GITHUB_OUTPUT
+          echo "fork=${FORK}" >> $GITHUB_OUTPUT
+
+  dispatch-to-workflow:
+    runs-on: ubuntu-latest
+    if: ${{ needs.test-job:.outputs.fork == 'false' }}
+    needs: [test-job]
+    steps:
       - name: Dispatch to terra-github-workflows
         id: try-dispatch
         uses: aurelien-baudet/workflow-dispatch@93e95b157d791ae7f42aef8f8a0d3d723eba1c31 #commit sha for v2.1.1
@@ -22,4 +60,4 @@ jobs:
           repo: hundred-ninety-nine/leonardo
           token: ${{ secrets.WF_TOKEN }}
           ref: refs/heads/develop
-          inputs: '{ "repo-owner": "${{ github.repository_owner }}", "repo-name": "${{ github.event.repository.name }}", "repo-branch": "test1" }'
+          inputs: '{ "repo-owner": "${{ github.repository_owner }}", "repo-name": "${{ github.event.repository.name }}", "repo-branch": "${{ needs.test-job.outputs.repo-branch }}" }'
