@@ -1,0 +1,24 @@
+name: Test workflow
+# Test workflow
+
+on:
+  push:
+    branches:
+      - test1
+    paths-ignore:
+      - 'README.md'
+
+jobs:
+  init-github-context:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Dispatch to terra-github-workflows
+        uses: aurelien-baudet/workflow-dispatch@93e95b157d791ae7f42aef8f8a0d3d723eba1c31 #commit sha for v2.1.1
+        with:
+          workflow: .github/workflows/test_workflow.yaml
+          repo: hundred-ninety-nine/leonardo
+          ref: refs/heads/develop
+          token: ${{ secrets.WF_TOKEN }} # github token for access to kick off a job in the private repo
+          inputs: '{ repo-owner": "${{ github.repository_owner }}", "repo-name": "${{ github.event.repository.name }}", "repo-branch": "test" }'
