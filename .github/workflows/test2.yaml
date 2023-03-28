@@ -20,5 +20,6 @@ jobs:
         with:
           workflow: .github/workflows/test_workflow.yaml
           repo: hundred-ninety-nine/leonardo
+          token: ${{ secrets.WF_TOKEN }}
           ref: refs/heads/develop
           inputs: '{ "repo-owner": "${{ github.repository_owner }}", "repo-name": "${{ github.event.repository.name }}", "repo-branch": "test1" }'
