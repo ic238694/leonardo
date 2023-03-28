@@ -31,7 +31,7 @@ jobs:
         run: |
           FORK=false
           GITHUB_EVENT_NAME=${{ github.event_name }}
-          echo "${GITHUB_EVENT_NAME}"
+          
           if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
             GITHUB_REF=${{ github.ref }}
           elif [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
@@ -44,6 +44,7 @@ jobs:
             exit 1
           fi
           echo "FORK=${FORK}"
+          echo "GITHUB_EVENT_NAME=${GITHUB_EVENT_NAME}"
           echo "repo-branch=${GITHUB_REF/refs\/heads\//""}" >> $GITHUB_OUTPUT
           echo "fork=${FORK}" >> $GITHUB_OUTPUT
 
