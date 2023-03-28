@@ -20,5 +20,4 @@ jobs:
           workflow: .github/workflows/test_workflow.yaml
           repo: hundred-ninety-nine/leonardo
           ref: refs/heads/develop
-          token: ${{ secrets.WF_TOKEN }} # github token for access to kick off a job in the private repo
           inputs: '{ repo-owner": "${{ github.repository_owner }}", "repo-name": "${{ github.event.repository.name }}", "repo-branch": "test" }'
