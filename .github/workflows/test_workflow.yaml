@@ -2,46 +2,30 @@ name: Test workflow
 # Test workflow
 
 on:
-  pull_request:
-    branches:
-      - develop
-    paths-ignore:
-      - 'README.md'
-  push:
-    branches:
-      - develop
-    paths-ignore:
-      - 'README.md'
-  merge_group:
-    branches:
-      - develop
+  workflow_dispatch:
+    inputs:
+      repo-owner:
+        description: 'The git repo owner'
+        required: true
+        type: string
+      repo-name:
+        description: 'The git repo name'
+        required: true
+        type: string
+      repo-branch:
+        description: 'The git branch name'
+        required: true
+        type: string
 
 jobs:
   init-github-context:
     runs-on: ubuntu-latest
-    outputs:
-      repo-branch: ${{ steps.extract-branch.outputs.repo-branch }}
 
     steps:
       - uses: actions/checkout@v3
-      - id: extract-branch
+      - id: echo info
         run: |
-          GITHUB_EVENT_NAME=${{ github.event_name }}
-          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
-            GITHUB_REF=${{ github.ref }}
-          elif [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-            GITHUB_REF=refs/heads/${{ github.head_ref }}
-          elif [[ "$GITHUB_EVENT_NAME" == "merge_group" ]]; then
-            GITHUB_REF=refs/heads/${{ github.head_ref }}
-          else
-            echo "Failed to extract branch information"
-            exit 1
-          fi
-          echo "repo-branch=${GITHUB_REF/refs\/heads\//""}" >> $GITHUB_OUTPUT
-          echo "event=${GITHUB_EVENT_NAME}" >> $GITHUB_OUTPUT
-          
-      - name: Echo event
-        run: |
-          echo "${{ steps.extract-branch.outputs.repo-branch }}"
-          echo "${{ steps.extract-branch.outputs.event }}"
+          echo "${{ inputs.repo-owner }}"
+          echo "${{ inputs.repo-name }}"
+          echo "${{ inputs.repo-branch }}"
           
