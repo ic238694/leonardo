@@ -34,9 +34,11 @@ jobs:
           
           if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
             GITHUB_REF=${{ github.ref }}
+            GITHUB_SHA=${{ github.sha }}
           elif [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
             FORK=${{ github.event.pull_request.head.repo.fork }}
             GITHUB_REF=refs/heads/${{ github.head_ref }}
+            GITHUB_SHA=${{ github.event.pull_request.head.sha }}
           elif [[ "$GITHUB_EVENT_NAME" == "merge_group" ]]; then
             GITHUB_REF=refs/heads/${{ github.head_ref }}
           else
@@ -46,6 +48,7 @@ jobs:
           echo "Obtain branch properties"
           echo "FORK=${FORK}"
           echo "GITHUB_EVENT_NAME=${GITHUB_EVENT_NAME}"
+          echo "GITHUB_SHA=${GITHUB_SHA}"
           echo "repo-branch=${GITHUB_REF/refs\/heads\//""}" >> $GITHUB_OUTPUT
           echo "fork=${FORK}" >> $GITHUB_OUTPUT
 
