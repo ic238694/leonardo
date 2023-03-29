@@ -43,7 +43,7 @@ jobs:
             echo "Failed to extract branch information"
             exit 1
           fi
-          echo "Obtain branch properties"
+          echo "Obtain branch properties again"
           echo "FORK=${FORK}"
           echo "GITHUB_EVENT_NAME=${GITHUB_EVENT_NAME}"
           echo "repo-branch=${GITHUB_REF/refs\/heads\//""}" >> $GITHUB_OUTPUT
